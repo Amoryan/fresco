@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-present, Facebook, Inc.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -8,7 +8,9 @@
 package com.facebook.imagepipeline.common;
 
 import android.graphics.Bitmap;
+import android.graphics.ColorSpace;
 import com.facebook.imagepipeline.decoder.ImageDecoder;
+import com.facebook.imagepipeline.transformation.BitmapTransformation;
 import java.util.Locale;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
@@ -60,6 +62,16 @@ public class ImageDecodeOptions {
    */
   public final @Nullable ImageDecoder customImageDecoder;
 
+  /** Bitmap transformation override */
+  public final @Nullable BitmapTransformation bitmapTransformation;
+
+  /**
+   * Allow explicit color management, must be one of the named color space in ColorSpace.Named. This
+   * flag might affect performance, if null, then SRGB color space is assumed if the SDK version >=
+   * 26.
+   */
+  public final @Nullable ColorSpace colorSpace;
+
   public ImageDecodeOptions(ImageDecodeOptionsBuilder b) {
     this.minDecodeIntervalMs = b.getMinDecodeIntervalMs();
     this.decodePreviewFrame = b.getDecodePreviewFrame();
@@ -68,6 +80,8 @@ public class ImageDecodeOptions {
     this.forceStaticImage = b.getForceStaticImage();
     this.bitmapConfig = b.getBitmapConfig();
     this.customImageDecoder = b.getCustomImageDecoder();
+    this.bitmapTransformation = b.getBitmapTransformation();
+    this.colorSpace = b.getColorSpace();
   }
 
   /**
@@ -101,6 +115,8 @@ public class ImageDecodeOptions {
     if (forceStaticImage != that.forceStaticImage) return false;
     if (bitmapConfig != that.bitmapConfig) return false;
     if (customImageDecoder != that.customImageDecoder) return false;
+    if (bitmapTransformation != that.bitmapTransformation) return false;
+    if (colorSpace != that.colorSpace) return false;
     return true;
   }
 
@@ -113,6 +129,8 @@ public class ImageDecodeOptions {
     result = 31 * result + (forceStaticImage ? 1 : 0);
     result = 31 * result + bitmapConfig.ordinal();
     result = 31 * result + (customImageDecoder != null ? customImageDecoder.hashCode() : 0);
+    result = 31 * result + (bitmapTransformation != null ? bitmapTransformation.hashCode() : 0);
+    result = 31 * result + (colorSpace != null ? colorSpace.hashCode() : 0);
     return result;
   }
 
@@ -120,13 +138,15 @@ public class ImageDecodeOptions {
   public String toString() {
     return String.format(
         (Locale) null,
-        "%d-%b-%b-%b-%b-%s-%s",
+        "%d-%b-%b-%b-%b-%b-%s-%s-%s",
         minDecodeIntervalMs,
         decodePreviewFrame,
         useLastFrameForPreview,
         decodeAllFrames,
         forceStaticImage,
         bitmapConfig.name(),
-        customImageDecoder);
+        customImageDecoder,
+        bitmapTransformation,
+        colorSpace);
   }
 }

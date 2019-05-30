@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-present, Facebook, Inc.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -60,6 +60,19 @@ public class GifImage implements AnimatedImage, AnimatedImageDecoder {
     return nativeCreateFromDirectByteBuffer(byteBuffer);
   }
 
+  /**
+   * Creates a {@link GifImage} from a ByteBuffer containing the image. This will throw if it fails
+   * to create.
+   *
+   * @param byteBuffer the ByteBuffer containing the image (a copy will be made)
+   */
+  public static GifImage create(ByteBuffer byteBuffer) {
+    ensure();
+    byteBuffer.rewind();
+
+    return nativeCreateFromDirectByteBuffer(byteBuffer);
+  }
+
   public static GifImage create(long nativePtr, int sizeInBytes) {
     ensure();
     Preconditions.checkArgument(nativePtr != 0);
@@ -69,6 +82,11 @@ public class GifImage implements AnimatedImage, AnimatedImageDecoder {
   @Override
   public AnimatedImage decode(long nativePtr, int sizeInBytes) {
     return GifImage.create(nativePtr, sizeInBytes);
+  }
+
+  @Override
+  public AnimatedImage decode(ByteBuffer byteBuffer) {
+    return GifImage.create(byteBuffer);
   }
 
   @DoNotStrip
@@ -184,16 +202,39 @@ public class GifImage implements AnimatedImage, AnimatedImageDecoder {
     }
   }
 
+  @DoNotStrip
   private static native GifImage nativeCreateFromDirectByteBuffer(ByteBuffer buffer);
+
+  @DoNotStrip
   private static native GifImage nativeCreateFromNativeMemory(long nativePtr, int sizeInBytes);
+
+  @DoNotStrip
   private native int nativeGetWidth();
+
+  @DoNotStrip
   private native int nativeGetHeight();
+
+  @DoNotStrip
   private native int nativeGetDuration();
+
+  @DoNotStrip
   private native int nativeGetFrameCount();
+
+  @DoNotStrip
   private native int[] nativeGetFrameDurations();
+
+  @DoNotStrip
   private native int nativeGetLoopCount();
+
+  @DoNotStrip
   private native GifFrame nativeGetFrame(int frameNumber);
+
+  @DoNotStrip
   private native int nativeGetSizeInBytes();
+
+  @DoNotStrip
   private native void nativeDispose();
+
+  @DoNotStrip
   private native void nativeFinalize();
 }

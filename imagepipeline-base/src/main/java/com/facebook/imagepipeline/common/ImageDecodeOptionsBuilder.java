@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-present, Facebook, Inc.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -8,7 +8,9 @@
 package com.facebook.imagepipeline.common;
 
 import android.graphics.Bitmap;
+import android.graphics.ColorSpace;
 import com.facebook.imagepipeline.decoder.ImageDecoder;
+import com.facebook.imagepipeline.transformation.BitmapTransformation;
 import javax.annotation.Nullable;
 
 /**
@@ -23,6 +25,8 @@ public class ImageDecodeOptionsBuilder {
   private boolean mForceStaticImage;
   private Bitmap.Config mBitmapConfig = Bitmap.Config.ARGB_8888;
   private @Nullable ImageDecoder mCustomImageDecoder;
+  private @Nullable BitmapTransformation mBitmapTransformation;
+  private @Nullable ColorSpace mColorSpace;
 
   public ImageDecodeOptionsBuilder() {
   }
@@ -40,6 +44,8 @@ public class ImageDecodeOptionsBuilder {
     mForceStaticImage = options.forceStaticImage;
     mBitmapConfig = options.bitmapConfig;
     mCustomImageDecoder = options.customImageDecoder;
+    mBitmapTransformation = options.bitmapTransformation;
+    mColorSpace = options.colorSpace;
     return this;
   }
 
@@ -190,6 +196,44 @@ public class ImageDecodeOptionsBuilder {
   public ImageDecodeOptionsBuilder setBitmapConfig(Bitmap.Config bitmapConfig) {
     mBitmapConfig = bitmapConfig;
     return this;
+  }
+
+  /**
+   * Set a custom in-place bitmap transformation that is applied immediately after decoding.
+   *
+   * @param bitmapTransformation the transformation to use
+   * @return the builder
+   */
+  public ImageDecodeOptionsBuilder setBitmapTransformation(
+      @Nullable BitmapTransformation bitmapTransformation) {
+    mBitmapTransformation = bitmapTransformation;
+    return this;
+  }
+
+  @Nullable
+  public BitmapTransformation getBitmapTransformation() {
+    return mBitmapTransformation;
+  }
+
+  /**
+   * Sets the target color space for decoding. When possible, the color space transformation will be
+   * performed at load time. This requires SDK version >= 26, otherwise it's a no-op.
+   *
+   * @param colorSpace target color space for decoding.
+   */
+  public ImageDecodeOptionsBuilder setColorSpace(ColorSpace colorSpace) {
+    mColorSpace = colorSpace;
+    return this;
+  }
+
+  /**
+   * Gets the target color space for decoding.
+   *
+   * @return the target color space.
+   */
+  @Nullable
+  public ColorSpace getColorSpace() {
+    return mColorSpace;
   }
 
   /**

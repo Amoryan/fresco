@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-present, Facebook, Inc.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -17,7 +17,9 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import android.net.Uri;
+import com.facebook.common.time.MonotonicClock;
 import com.facebook.common.util.UriUtil;
+import com.facebook.imagepipeline.producers.HttpUrlConnectionNetworkFetcher.HttpUrlConnectionNetworkFetchState;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -45,7 +47,7 @@ public class HttpUrlConnectionNetworkFetcherTest {
   public static final String INITIAL_TEST_URL = "http://localhost/";
   public static final String HTTPS_URL = "https://localhost/";
 
-  @Mock private FetchState mMockFetchState;
+  @Mock private HttpUrlConnectionNetworkFetchState mMockFetchState;
   @Mock private ProducerContext mMockProducerContext;
   @Mock private NetworkFetcher.Callback mMockCallback;
 
@@ -56,7 +58,7 @@ public class HttpUrlConnectionNetworkFetcherTest {
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
 
-    mFetcher = new HttpUrlConnectionNetworkFetcher();
+    mFetcher = new HttpUrlConnectionNetworkFetcher(mock(MonotonicClock.class));
     mConnectionsQueue = new LinkedList<>();
     mockUrlConnections();
     mockUriParse();

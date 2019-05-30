@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-present, Facebook, Inc.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -85,15 +85,36 @@ public class GifFrame implements AnimatedImageFrame {
     return nativeGetDisposalMode();
   }
 
+  @DoNotStrip
   private native void nativeRenderFrame(int width, int height, Bitmap bitmap);
+
+  @DoNotStrip
   private native int nativeGetDurationMs();
+
+  @DoNotStrip
   private native int nativeGetWidth();
+
+  @DoNotStrip
   private native int nativeGetHeight();
+
+  @DoNotStrip
   private native int nativeGetXOffset();
+
+  @DoNotStrip
   private native int nativeGetYOffset();
+
+  @DoNotStrip
   private native int nativeGetDisposalMode();
+
+  @DoNotStrip
   private native int nativeGetTransparentPixelColor();
+
+  @DoNotStrip
   private native boolean nativeHasTransparency();
+
+  @DoNotStrip
   private native void nativeDispose();
+
+  @DoNotStrip
   private native void nativeFinalize();
 }

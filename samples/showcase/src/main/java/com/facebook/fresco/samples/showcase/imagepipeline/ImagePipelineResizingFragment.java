@@ -14,8 +14,6 @@ package com.facebook.fresco.samples.showcase.imagepipeline;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +23,8 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -32,6 +32,7 @@ import com.facebook.fresco.samples.showcase.BaseShowcaseFragment;
 import com.facebook.fresco.samples.showcase.R;
 import com.facebook.fresco.samples.showcase.imagepipeline.widget.ResizableFrameLayout;
 import com.facebook.fresco.samples.showcase.misc.ImageUriProvider;
+import com.facebook.imagepipeline.common.ImageDecodeOptionsBuilder;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
@@ -78,8 +79,7 @@ public class ImagePipelineResizingFragment extends BaseShowcaseFragment {
 
   @Override
   public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
-    final ImageUriProvider imageUriProvider = ImageUriProvider.getInstance(getContext());
-    setupImageFormatEntries(imageUriProvider);
+    setupImageFormatEntries(sampleUris());
 
     mButton = (Button) view.findViewById(R.id.button);
     mDraweeMain = (SimpleDraweeView) view.findViewById(R.id.drawee_view);
@@ -178,7 +178,10 @@ public class ImagePipelineResizingFragment extends BaseShowcaseFragment {
 
   private void reloadImage(Uri imageUri, @Nullable ResizeOptions resizeOptions) {
     final ImageRequest imageRequest =
-        ImageRequestBuilder.newBuilderWithSource(imageUri).setResizeOptions(resizeOptions).build();
+        ImageRequestBuilder.newBuilderWithSource(imageUri)
+            .setResizeOptions(resizeOptions)
+            .setImageDecodeOptions(new ImageDecodeOptionsBuilder().build())
+            .build();
 
     final DraweeController draweeController = Fresco.newDraweeControllerBuilder()
         .setOldController(mDraweeMain.getController())

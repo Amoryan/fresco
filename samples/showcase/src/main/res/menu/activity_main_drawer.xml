@@ -58,10 +58,6 @@
     <menu>
       <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_imagepipeline_media_variations"
-            android:title="@string/imagepipeline_media_variations_title"
-            />
-        <item
             android:id="@+id/nav_imagepipeline_notification"
             android:title="@string/imagepipeline_notification_title"
             />
@@ -132,6 +128,29 @@
         <item
             android:id="@+id/nav_format_datauri"
             android:title="@string/format_datauri_title"
+            />
+      </group>
+    </menu>
+  </item>
+
+  <item android:title="@string/category_vito">
+    <menu>
+      <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_vito_litho_simple"
+            android:title="@string/vito_litho_simple"
+            />
+        <item
+            android:id="@+id/nav_vito_image_options_config"
+            android:title="@string/vito_litho_image_options_config"
+            />
+        <item
+            android:id="@+id/nav_vito_litho_sections"
+            android:title="@string/vito_litho_sections"
+            />
+        <item
+            android:id="@+id/nav_vito_litho_gallery"
+            android:title="@string/vito_litho_gallery"
             />
       </group>
     </menu>

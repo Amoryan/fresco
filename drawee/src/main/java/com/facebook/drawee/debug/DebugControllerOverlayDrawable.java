@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-present, Facebook, Inc.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -18,6 +18,8 @@ import android.view.Gravity;
 import com.facebook.common.internal.VisibleForTesting;
 import com.facebook.drawee.debug.listener.ImageLoadingTimeListener;
 import com.facebook.drawee.drawable.ScalingUtils.ScaleType;
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Nullable;
 
 /** Drawee Controller overlay that displays debug information. */
@@ -45,13 +47,13 @@ public class DebugControllerOverlayDrawable extends Drawable implements ImageLoa
   private static final int TEXT_COLOR = 0xFFFFFFFF;
   private static final int OUTLINE_STROKE_WIDTH_PX = 2;
   private static final int MAX_TEXT_SIZE_PX = 40;
-  private static final int MIN_TEXT_SIZE_PX = 12;
+  private static final int MIN_TEXT_SIZE_PX = 10;
   private static final int TEXT_LINE_SPACING_PX = 8;
   private static final int TEXT_PADDING_PX = 10;
 
   // Debug-text dependent parameters
-  private static final int MAX_NUMBER_OF_LINES = 7;
-  private static final int MAX_LINE_WIDTH_EM = 7;
+  private static final int MAX_NUMBER_OF_LINES = 9;
+  private static final int MAX_LINE_WIDTH_EM = 8;
 
   // General information
   private String mControllerId;
@@ -61,6 +63,7 @@ public class DebugControllerOverlayDrawable extends Drawable implements ImageLoa
   private int mImageSizeBytes;
   private String mImageFormat;
   private ScaleType mScaleType;
+  private HashMap<String, String> mAdditionalData = new HashMap<>();
 
   // Animations
   private int mFrameCount;
@@ -82,6 +85,7 @@ public class DebugControllerOverlayDrawable extends Drawable implements ImageLoa
   private int mCurrentTextYPx;
 
   private long mFinalImageTimeMs;
+  private String mOrigin;
 
   public DebugControllerOverlayDrawable() {
     reset();
@@ -91,11 +95,13 @@ public class DebugControllerOverlayDrawable extends Drawable implements ImageLoa
     mWidthPx = -1;
     mHeightPx = -1;
     mImageSizeBytes = -1;
+    mAdditionalData = new HashMap<>();
     mFrameCount = -1;
     mLoopCount = -1;
     mImageFormat = null;
     setControllerId(null);
     mFinalImageTimeMs = -1;
+    mOrigin = null;
     invalidateSelf();
   }
 
@@ -133,12 +139,21 @@ public class DebugControllerOverlayDrawable extends Drawable implements ImageLoa
     invalidateSelf();
   }
 
+  public void setOrigin(String s) {
+    mOrigin = s;
+    invalidateSelf();
+  }
+
   /**
    *
    * @param imageSizeBytes the image size in bytes
    */
   public void setImageSize(int imageSizeBytes) {
     mImageSizeBytes = imageSizeBytes;
+  }
+
+  public void addAdditionalData(String key, String value) {
+    mAdditionalData.put(key, value);
   }
 
   public void setImageFormat(@Nullable String imageFormat) {
@@ -201,6 +216,12 @@ public class DebugControllerOverlayDrawable extends Drawable implements ImageLoa
     }
     if (mFinalImageTimeMs >= 0) {
       addDebugText(canvas, "t: %d ms", mFinalImageTimeMs);
+    }
+    if (mOrigin != null) {
+      addDebugText(canvas, "origin: %s", mOrigin);
+    }
+    for (Map.Entry<String, String> entry : mAdditionalData.entrySet()) {
+      addDebugText(canvas, "%s: %s", entry.getKey(), entry.getValue());
     }
   }
 

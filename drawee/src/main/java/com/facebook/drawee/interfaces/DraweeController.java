@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-present, Facebook, Inc.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -65,4 +65,7 @@ public interface DraweeController {
    * @return content description, or null if the image has no content description
    */
   String getContentDescription();
+
+  /** Returns whether {@code other} would fetch the same image as {@code this}. */
+  boolean isSameImageRequest(DraweeController other);
 }

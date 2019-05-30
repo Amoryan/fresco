@@ -13,23 +13,24 @@ package com.facebook.fresco.samples.showcase.imagepipeline;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.Nullable;
 import com.facebook.common.executors.UiThreadImmediateExecutorService;
 import com.facebook.datasource.BaseDataSubscriber;
 import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.info.ImageOrigin;
 import com.facebook.drawee.backends.pipeline.info.ImageOriginListener;
+import com.facebook.drawee.backends.pipeline.info.ImageOriginUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.fresco.samples.showcase.BaseShowcaseFragment;
 import com.facebook.fresco.samples.showcase.R;
-import com.facebook.fresco.samples.showcase.misc.ImageUriProvider;
 import com.facebook.fresco.samples.showcase.misc.ImageUriProvider.ImageSize;
 import com.facebook.fresco.samples.showcase.misc.ImageUriProvider.Orientation;
 import com.facebook.imagepipeline.request.ImageRequest;
@@ -46,22 +47,32 @@ public class ImagePipelinePrefetchFragment extends BaseShowcaseFragment {
   private Button mPrefetchButton;
   private TextView mPrefetchStatus;
   private ViewGroup mDraweesHolder;
+  private final Handler mHandler = new Handler();
 
   private final ImageOriginListener mImageOriginListener =
       new ImageOriginListener() {
         @Override
         public void onImageLoaded(
-            String controllerId, @ImageOrigin int imageOrigin, boolean successful) {
-          Toast.makeText(
-                  getContext(),
-                  String.format(
-                      (Locale) null,
-                      "Image loaded: controllerId=%s, origin=%s, successful=%b",
-                      controllerId,
-                      imageOrigin,
-                      successful),
-                  Toast.LENGTH_SHORT)
-              .show();
+            final String controllerId,
+            final @ImageOrigin int imageOrigin,
+            final boolean successful,
+            final @Nullable String ultimateProducerName) {
+          mHandler.post(
+              new Runnable() {
+                @Override
+                public void run() {
+                  Toast.makeText(
+                          getContext(),
+                          String.format(
+                              (Locale) null,
+                              "Image loaded: controllerId=%s, origin=%s, successful=%b",
+                              controllerId,
+                              ImageOriginUtils.toString(imageOrigin),
+                              successful),
+                          Toast.LENGTH_SHORT)
+                      .show();
+                }
+              });
         }
       };
 
@@ -110,11 +121,10 @@ public class ImagePipelinePrefetchFragment extends BaseShowcaseFragment {
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
-    final ImageUriProvider imageUriProvider = ImageUriProvider.getInstance(getContext());
     mUris =
         new Uri[] {
-          imageUriProvider.createSampleUri(ImageSize.L, Orientation.LANDSCAPE),
-          imageUriProvider.createSampleUri(ImageSize.L, Orientation.PORTRAIT),
+          sampleUris().createSampleUri(ImageSize.L, Orientation.LANDSCAPE),
+          sampleUris().createSampleUri(ImageSize.L, Orientation.PORTRAIT),
         };
 
     final Button clearCacheButton = (Button) view.findViewById(R.id.clear_cache);

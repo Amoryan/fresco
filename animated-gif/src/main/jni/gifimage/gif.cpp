@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-present, Facebook, Inc.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -996,6 +996,9 @@ static PixelType32 packARGB32(
  * @return a 32-bit pixel
  */
 static PixelType32 getColorFromTable(int idx, const ColorMapObject* pColorMap) {
+  if (pColorMap == NULL) {
+      return TRANSPARENT;
+  }
   int colIdx = (idx >= pColorMap->ColorCount) ? 0 : idx;
   GifColorType* pColor = &pColorMap->Colors[colIdx];
   return packARGB32(0xFF, pColor->Red, pColor->Green, pColor->Blue);
@@ -1341,9 +1344,6 @@ static JNINativeMethod sGifImageMethods[] = {
   { "nativeGetFrameDurations",
     "()[I",
     (void*)GifImage_nativeGetFrameDurations },
-  { "nativeGetDuration",
-    "()I",
-    (void*)GifImage_nativeGetDuration },
   { "nativeGetLoopCount",
     "()I",
     (void*)GifImage_nativeGetLoopCount },
@@ -1380,9 +1380,6 @@ static JNINativeMethod sGifFrameMethods[] = {
   { "nativeGetYOffset",
     "()I",
     (void*)GifFrame_nativeGetYOffset },
-  { "nativeGetDurationMs",
-    "()I",
-    (void*)GifFrame_nativeGetDurationMs },
   { "nativeGetTransparentPixelColor",
     "()I",
     (void*)GifFrame_nativeGetTransparentPixelColor },

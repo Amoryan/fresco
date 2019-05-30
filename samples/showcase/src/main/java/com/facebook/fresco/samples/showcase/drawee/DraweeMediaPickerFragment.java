@@ -18,17 +18,18 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.fresco.samples.showcase.BaseShowcaseFragment;
 import com.facebook.fresco.samples.showcase.R;
+import com.facebook.fresco.samples.showcase.common.ToggleAnimationClickListener;
 
 /**
  * Display images from media pickers.
@@ -54,6 +55,8 @@ public class DraweeMediaPickerFragment extends BaseShowcaseFragment {
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     mSimpleDraweeView = (SimpleDraweeView) view.findViewById(R.id.drawee_view);
     mImagePath = (TextView) view.findViewById(R.id.image_path);
+
+    mSimpleDraweeView.setOnClickListener(new ToggleAnimationClickListener(mSimpleDraweeView));
 
     View actionOpenDocumentButton = view.findViewById(R.id.pick_action_open_document);
     actionOpenDocumentButton.setOnClickListener(new View.OnClickListener() {

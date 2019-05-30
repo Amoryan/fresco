@@ -147,6 +147,14 @@
     <li class="api apilevel-">
   <a href="../../../../com/facebook/animated/gif/package-summary.html">com.facebook.animated.gif</a></li>
     <li class="api apilevel-">
+  <a href="../../../../com/facebook/animated/giflite/package-summary.html">com.facebook.animated.giflite</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../com/facebook/animated/giflite/decoder/package-summary.html">com.facebook.animated.giflite.decoder</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../com/facebook/animated/giflite/draw/package-summary.html">com.facebook.animated.giflite.draw</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../com/facebook/animated/giflite/drawable/package-summary.html">com.facebook.animated.giflite.drawable</a></li>
+    <li class="api apilevel-">
   <a href="../../../../com/facebook/animated/webp/package-summary.html">com.facebook.animated.webp</a></li>
     <li class="api apilevel-">
   <a href="../../../../com/facebook/binaryresource/package-summary.html">com.facebook.binaryresource</a></li>
@@ -191,6 +199,12 @@
     <li class="api apilevel-">
   <a href="../../../../com/facebook/drawee/backends/pipeline/package-summary.html">com.facebook.drawee.backends.pipeline</a></li>
     <li class="api apilevel-">
+  <a href="../../../../com/facebook/drawee/backends/pipeline/debug/package-summary.html">com.facebook.drawee.backends.pipeline.debug</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../com/facebook/drawee/backends/pipeline/info/package-summary.html">com.facebook.drawee.backends.pipeline.info</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../com/facebook/drawee/backends/pipeline/info/internal/package-summary.html">com.facebook.drawee.backends.pipeline.info.internal</a></li>
+    <li class="api apilevel-">
   <a href="../../../../com/facebook/drawee/backends/volley/package-summary.html">com.facebook.drawee.backends.volley</a></li>
     <li class="api apilevel-">
   <a href="../../../../com/facebook/drawee/components/package-summary.html">com.facebook.drawee.components</a></li>
@@ -198,6 +212,8 @@
   <a href="../../../../com/facebook/drawee/controller/package-summary.html">com.facebook.drawee.controller</a></li>
     <li class="api apilevel-">
   <a href="../../../../com/facebook/drawee/debug/package-summary.html">com.facebook.drawee.debug</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../com/facebook/drawee/debug/listener/package-summary.html">com.facebook.drawee.debug.listener</a></li>
     <li class="api apilevel-">
   <a href="../../../../com/facebook/drawee/drawable/package-summary.html">com.facebook.drawee.drawable</a></li>
     <li class="selected api apilevel-">
@@ -253,9 +269,13 @@
     <li class="api apilevel-">
   <a href="../../../../com/facebook/imagepipeline/datasource/package-summary.html">com.facebook.imagepipeline.datasource</a></li>
     <li class="api apilevel-">
+  <a href="../../../../com/facebook/imagepipeline/debug/package-summary.html">com.facebook.imagepipeline.debug</a></li>
+    <li class="api apilevel-">
   <a href="../../../../com/facebook/imagepipeline/decoder/package-summary.html">com.facebook.imagepipeline.decoder</a></li>
     <li class="api apilevel-">
   <a href="../../../../com/facebook/imagepipeline/drawable/package-summary.html">com.facebook.imagepipeline.drawable</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../com/facebook/imagepipeline/filter/package-summary.html">com.facebook.imagepipeline.filter</a></li>
     <li class="api apilevel-">
   <a href="../../../../com/facebook/imagepipeline/image/package-summary.html">com.facebook.imagepipeline.image</a></li>
     <li class="api apilevel-">
@@ -272,6 +292,12 @@
   <a href="../../../../com/facebook/imagepipeline/producers/package-summary.html">com.facebook.imagepipeline.producers</a></li>
     <li class="api apilevel-">
   <a href="../../../../com/facebook/imagepipeline/request/package-summary.html">com.facebook.imagepipeline.request</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../com/facebook/imagepipeline/systrace/package-summary.html">com.facebook.imagepipeline.systrace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../com/facebook/imagepipeline/transcoder/package-summary.html">com.facebook.imagepipeline.transcoder</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../com/facebook/imagepipeline/transformation/package-summary.html">com.facebook.imagepipeline.transformation</a></li>
     <li class="api apilevel-">
   <a href="../../../../com/facebook/imageutils/package-summary.html">com.facebook.imageutils</a></li>
     <li class="api apilevel-">
@@ -461,16 +487,15 @@ Summary:
 
 
 <h2>Class Overview</h2>
-<p>A SettableDraweeHierarchy that displays placeholder image until the actual image is set.
- If provided, failure image will be used in case of failure (placeholder otherwise).
- If provided, retry image will be used in case of failure when retrying is enabled.
- If provided, progressbar will be displayed until fully loaded.
- Each image can be displayed with a different scale type (or no scaling at all).
- Fading between the layers is supported. Rounding is supported.
+<p>A SettableDraweeHierarchy that displays placeholder image until the actual image is set. If
+ provided, failure image will be used in case of failure (placeholder otherwise). If provided,
+ retry image will be used in case of failure when retrying is enabled. If provided, progressbar
+ will be displayed until fully loaded. Each image can be displayed with a different scale type (or
+ no scaling at all). Fading between the layers is supported. Rounding is supported.
 
- <p>
- Example hierarchy with a placeholder, retry, failure and the actual image:
-  <pre>
+ <p>Example hierarchy with a placeholder, retry, failure and the actual image:
+
+ <pre>
   o RootDrawable (top level drawable)
   |
   +--o FadeDrawable
@@ -494,22 +519,24 @@ Summary:
         +--o Drawable (failure image)
   </pre>
 
- <p>
- Note:
+ <p>Note:
+
  <ul>
- <li> RootDrawable and FadeDrawable are always created.
- <li> All branches except the actual image branch are optional (placeholder, failure, retry,
- progress bar). If some branch is not specified it won't be created. Index in FadeDrawable will
- still be reserved though.
- <li> If overlays and/or background are specified, they are added to the same fade drawable, and
- are always being displayed.
- <li> ScaleType and Matrix transformations will be added only if specified. If both are
- unspecified, then the branch for that image is attached to FadeDrawable directly. Matrix
- transformation is only supported for the actual image, and it is not recommended to be used.
- <li> Rounding, if specified, is applied to all layers. Rounded drawable can either wrap
- FadeDrawable, or if leaf rounding is specified, each leaf drawable will be rounded separately.
- <li> A particular drawable instance should be used by only one DH. If more than one DH is being
- built with the same builder, different drawable instances must be specified for each DH.
+   <li>RootDrawable and FadeDrawable are always created.
+   <li>All branches except the actual image branch are optional (placeholder, failure, retry,
+       progress bar). If some branch is not specified it won't be created. Index in FadeDrawable
+       will still be reserved though.
+   <li>If overlays and/or background are specified, they are added to the same fade drawable, and
+       are always being displayed.
+   <li>ScaleType and Matrix transformations will be added only if specified. If both are
+       unspecified, then the branch for that image is attached to FadeDrawable directly. Matrix
+       transformation is only supported for the actual image, and it is not recommended to be
+       used.
+   <li>Rounding, if specified, is applied to all layers. Rounded drawable can either wrap
+       FadeDrawable, or if leaf rounding is specified, each leaf drawable will be rounded
+       separately.
+   <li>A particular drawable instance should be used by only one DH. If more than one DH is being
+       built with the same builder, different drawable instances must be specified for each DH.
  </ul>
 </p>
 
@@ -669,13 +696,29 @@ Summary:
             boolean
         </td>
         <td class="jd-linkcol" width="100%">
-        <span class="sympad"><a href="../../../../com/facebook/drawee/generic/GenericDraweeHierarchy.html#hasPlaceholderImage()">hasPlaceholderImage</a></span>()
+        <span class="sympad"><a href="../../../../com/facebook/drawee/generic/GenericDraweeHierarchy.html#hasImage()">hasImage</a></span>()
         
   </td></tr>
 
 
 	 
     <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../com/facebook/drawee/generic/GenericDraweeHierarchy.html#hasPlaceholderImage()">hasPlaceholderImage</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -693,7 +736,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -711,7 +754,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -729,7 +772,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -747,7 +790,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -765,7 +808,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -783,7 +826,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -801,7 +844,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -819,7 +862,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -837,7 +880,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -855,7 +898,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -873,7 +916,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -891,7 +934,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -909,7 +952,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -927,7 +970,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -945,7 +988,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -963,7 +1006,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -981,7 +1024,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -999,7 +1042,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -1017,7 +1060,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -1035,7 +1078,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -1053,7 +1096,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -1071,7 +1114,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -1089,7 +1132,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -1107,7 +1150,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -1125,7 +1168,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -1144,7 +1187,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -1162,7 +1205,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -1180,7 +1223,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -1198,7 +1241,7 @@ Summary:
 
 
 	 
-    <tr class=" api apilevel-" >
+    <tr class="alt-color api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -1216,7 +1259,7 @@ Summary:
 
 
 	 
-    <tr class="alt-color api apilevel-" >
+    <tr class=" api apilevel-" >
         <td class="jd-typecol">
             
             
@@ -1831,6 +1874,37 @@ From interface
 </div>
 
 
+<a id="hasImage()"></a>
+
+<div class="jd-details api apilevel-"> 
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public 
+         
+         
+         
+         
+        boolean
+      </span>
+      <span class="sympad">hasImage</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
 <a id="hasPlaceholderImage()"></a>
 
 <div class="jd-details api apilevel-"> 
@@ -2233,11 +2307,6 @@ From interface
           <th>resourceId</th>
           <td>an identifier of an Android drawable or color resource.</td>
         </tr>
-        <tr>
-          <th>scaleType</th>
-          <td>a new scale type.
-</td>
-        </tr>
       </table>
   </div>
 
@@ -2474,11 +2543,6 @@ From interface
           <th>resourceId</th>
           <td>an identifier of an Android drawable or color resource.</td>
         </tr>
-        <tr>
-          <th>scaleType</th>
-          <td>a new scale type.
-</td>
-        </tr>
       </table>
   </div>
 
@@ -2668,11 +2732,6 @@ From interface
           <th>resourceId</th>
           <td>an identifier of an Android drawable or color resource.</td>
         </tr>
-        <tr>
-          <th>scaleType</th>
-          <td>a new scale type.
-</td>
-        </tr>
       </table>
   </div>
 
@@ -2858,11 +2917,6 @@ From interface
         <tr>
           <th>resourceId</th>
           <td>an identifier of an Android drawable or color resource.</td>
-        </tr>
-        <tr>
-          <th>scaleType</th>
-          <td>a new scale type.
-</td>
         </tr>
       </table>
   </div>

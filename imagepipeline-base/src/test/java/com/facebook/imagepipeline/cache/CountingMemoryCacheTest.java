@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-present, Facebook, Inc.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -14,33 +14,27 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.CALLS_REAL_METHODS;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import android.graphics.Bitmap;
 import android.os.SystemClock;
-import com.android.internal.util.Predicate;
+import com.facebook.common.internal.Predicate;
 import com.facebook.common.internal.Supplier;
 import com.facebook.common.memory.MemoryTrimType;
 import com.facebook.common.references.CloseableReference;
 import com.facebook.common.references.ResourceReleaser;
-import com.facebook.imagepipeline.bitmaps.PlatformBitmapFactory;
+import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -51,8 +45,8 @@ import org.robolectric.annotation.Config;
 
 @RunWith(RobolectricTestRunner.class)
 @PrepareForTest({SystemClock.class})
-@PowerMockIgnore({ "org.mockito.*", "org.robolectric.*", "android.*" })
-@Config(manifest=Config.NONE)
+@PowerMockIgnore({"org.mockito.*", "org.robolectric.*", "androidx.*", "android.*"})
+@Config(manifest = Config.NONE)
 public class CountingMemoryCacheTest {
 
   private static final int CACHE_MAX_SIZE = 1200;
@@ -60,12 +54,12 @@ public class CountingMemoryCacheTest {
   private static final int CACHE_EVICTION_QUEUE_MAX_SIZE = 1100;
   private static final int CACHE_EVICTION_QUEUE_MAX_COUNT = 3;
   private static final int CACHE_ENTRY_MAX_SIZE = 1000;
+  private static final long PARAMS_CHECK_INTERVAL_MS = TimeUnit.MINUTES.toMillis(5);
 
   @Mock public ResourceReleaser<Integer> mReleaser;
   @Mock public CountingMemoryCache.CacheTrimStrategy mCacheTrimStrategy;
   @Mock public Supplier<MemoryCacheParams> mParamsSupplier;
   @Mock public CountingMemoryCache.EntryStateObserver<String> mEntryStateObserver;
-  @Mock public PlatformBitmapFactory.BitmapCreationObserver mBitmapCreationObserver;
   @Mock public Bitmap mBitmap;
 
   @Rule
@@ -74,7 +68,6 @@ public class CountingMemoryCacheTest {
   private ValueDescriptor<Integer> mValueDescriptor;
   private MemoryCacheParams mParams;
   private CountingMemoryCache<String, Integer> mCache;
-  private PlatformBitmapFactory mPlatformBitmapFactory;
   private CloseableReference<Bitmap> mBitmapReference;
 
   private static final String KEY = "KEY";
@@ -101,61 +94,17 @@ public class CountingMemoryCacheTest {
             return value;
           }
         };
-    mParams = new MemoryCacheParams(
-        CACHE_MAX_SIZE,
-        CACHE_MAX_COUNT,
-        CACHE_EVICTION_QUEUE_MAX_SIZE,
-        CACHE_EVICTION_QUEUE_MAX_COUNT,
-        CACHE_ENTRY_MAX_SIZE);
+    mParams =
+        new MemoryCacheParams(
+            CACHE_MAX_SIZE,
+            CACHE_MAX_COUNT,
+            CACHE_EVICTION_QUEUE_MAX_SIZE,
+            CACHE_EVICTION_QUEUE_MAX_COUNT,
+            CACHE_ENTRY_MAX_SIZE,
+            PARAMS_CHECK_INTERVAL_MS);
     when(mParamsSupplier.get()).thenReturn(mParams);
-    mPlatformBitmapFactory = Mockito.mock(PlatformBitmapFactory.class);
     mBitmapReference = CloseableReference.of(mBitmap, FAKE_BITMAP_RESOURCE_RELEASER);
-    mCache = new CountingMemoryCache<>(
-        mValueDescriptor,
-        mCacheTrimStrategy,
-        mParamsSupplier,
-        mPlatformBitmapFactory,
-        true);
-  }
-
-  @Test
-  public void testSetCreationListener() throws Exception {
-    verify(mPlatformBitmapFactory, times(1))
-        .setCreationListener(any(PlatformBitmapFactory.BitmapCreationObserver.class));
-  }
-
-  @Test
-  public void testAddBitmapReference() throws Exception {
-    when(mPlatformBitmapFactory.createBitmapInternal(anyInt(), anyInt(), any(Bitmap.Config.class)))
-        .thenReturn(mBitmapReference);
-    when(mPlatformBitmapFactory.createBitmap(anyInt(), anyInt())).thenCallRealMethod();
-    when(mPlatformBitmapFactory.createBitmap(anyInt(), anyInt(), any(Bitmap.Config.class)))
-        .thenCallRealMethod();
-    when(mPlatformBitmapFactory.createBitmap(
-        anyInt(),
-        anyInt(),
-        any(Bitmap.Config.class),
-        anyObject()))
-        .thenCallRealMethod();
-    CloseableReference<Bitmap> bitmapReference = mPlatformBitmapFactory.createBitmap(50, 50);
-    assertEquals(bitmapReference, mBitmapReference);
-    verify(mPlatformBitmapFactory).addBitmapReference(mBitmapReference.get(), null);
-  }
-
-  @Test
-  public void testOnBitmapCreated() throws Exception {
-    mPlatformBitmapFactory = mock(PlatformBitmapFactory.class, CALLS_REAL_METHODS);
-
-    mCache = new CountingMemoryCache<>(
-        mValueDescriptor,
-        mCacheTrimStrategy,
-        mParamsSupplier,
-        mPlatformBitmapFactory,
-        true);
-
-    assertEquals("other entries count mismatch", 0, mCache.mOtherEntries.size());
-    mPlatformBitmapFactory.addBitmapReference(mBitmapReference.get(), null);
-    assertEquals("other entries count mismatch" ,1, mCache.mOtherEntries.size());
+    mCache = new CountingMemoryCache<>(mValueDescriptor, mCacheTrimStrategy, mParamsSupplier);
   }
 
   @Test
@@ -536,8 +485,7 @@ public class CountingMemoryCacheTest {
     mCache.get(KEY);
     inOrder.verify(mParamsSupplier).get();
 
-    PowerMockito.when(SystemClock.uptimeMillis())
-        .thenReturn(CountingMemoryCache.PARAMS_INTERCHECK_INTERVAL_MS - 1);
+    PowerMockito.when(SystemClock.uptimeMillis()).thenReturn(PARAMS_CHECK_INTERVAL_MS - 1);
     mCache.get(KEY);
     inOrder.verify(mParamsSupplier, never()).get();
     mCache.get(KEY);
@@ -546,16 +494,17 @@ public class CountingMemoryCacheTest {
     assertTotalSize(1, 700);
     assertExclusivelyOwnedSize(1, 700);
 
-    mParams = new MemoryCacheParams(
-        500 /* cache max size */,
-        CACHE_MAX_COUNT,
-        CACHE_EVICTION_QUEUE_MAX_SIZE,
-        CACHE_EVICTION_QUEUE_MAX_COUNT,
-        CACHE_ENTRY_MAX_SIZE);
+    mParams =
+        new MemoryCacheParams(
+            500 /* cache max size */,
+            CACHE_MAX_COUNT,
+            CACHE_EVICTION_QUEUE_MAX_SIZE,
+            CACHE_EVICTION_QUEUE_MAX_COUNT,
+            CACHE_ENTRY_MAX_SIZE,
+            PARAMS_CHECK_INTERVAL_MS);
     when(mParamsSupplier.get()).thenReturn(mParams);
 
-    PowerMockito.when(SystemClock.uptimeMillis())
-        .thenReturn(CountingMemoryCache.PARAMS_INTERCHECK_INTERVAL_MS);
+    PowerMockito.when(SystemClock.uptimeMillis()).thenReturn(PARAMS_CHECK_INTERVAL_MS);
     mCache.get(KEY);
     inOrder.verify(mParamsSupplier).get();
 
@@ -631,10 +580,9 @@ public class CountingMemoryCacheTest {
   @Test
   public void testTrimming() {
     MemoryTrimType memoryTrimType = MemoryTrimType.OnCloseToDalvikHeapLimit;
-    mParams = new MemoryCacheParams(1100, 10, 1100, 10, 110);
+    mParams = new MemoryCacheParams(1100, 10, 1100, 10, 110, PARAMS_CHECK_INTERVAL_MS);
     when(mParamsSupplier.get()).thenReturn(mParams);
-    PowerMockito.when(SystemClock.uptimeMillis())
-        .thenReturn(CountingMemoryCache.PARAMS_INTERCHECK_INTERVAL_MS);
+    PowerMockito.when(SystemClock.uptimeMillis()).thenReturn(PARAMS_CHECK_INTERVAL_MS);
     InOrder inOrder = inOrder(mReleaser);
 
     // create original references

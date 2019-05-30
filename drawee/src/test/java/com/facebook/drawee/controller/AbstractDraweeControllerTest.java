@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-present, Facebook, Inc.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -35,6 +35,7 @@ import com.facebook.common.internal.Throwables;
 import com.facebook.datasource.DataSource;
 import com.facebook.datasource.SimpleDataSource;
 import com.facebook.drawee.components.DeferredReleaser;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.interfaces.SettableDraweeHierarchy;
 import java.util.ArrayList;
 import java.util.List;
@@ -161,6 +162,11 @@ public class AbstractDraweeControllerTest {
 
     @Override
     protected void releaseDrawable(@Nullable Drawable drawable) {
+    }
+
+    @Override
+    public boolean isSameImageRequest(DraweeController other) {
+      return false;
     }
   }
 
